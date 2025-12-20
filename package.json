@@ -4,7 +4,7 @@
   "description": "The essential tool for LLM prompting. Copy code files to Markdown with relative paths, smart binary filtering, and size safeguards.",
   "version": "0.0.1",
   "icon": "icon.png",
-  "publisher": "w0fv1",
+  "publisher": "mukea.cc",
   "repository": {
     "type": "git",
     "url": "https://github.com/mukea-org/prompt-context"
