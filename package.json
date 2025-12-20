@@ -1,0 +1,111 @@
+{
+  "name": "prompt-context",
+  "displayName": "PromptContext",
+  "description": "The essential tool for LLM prompting. Copy code files to Markdown with relative paths, smart binary filtering, and size safeguards.",
+  "version": "0.0.1",
+  "icon": "icon.png",
+  "publisher": "w0fv1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mukea-org/prompt-context"
+  },
+  "engines": {
+    "vscode": "^1.107.0"
+  },
+  "categories": [
+    "Chat",
+    "AI",
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "prompt-context.addHeader",
+        "title": "Add File Path Header",
+        "category": "Prompt Context"
+      },
+      {
+        "command": "prompt-context.copyContext",
+        "title": "Copy to Prompt (Markdown)",
+        "category": "Prompt Context"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "prompt-context.addHeader",
+          "group": "1_modification",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "prompt-context.copyContext",
+          "group": "9_cutcopypaste",
+          "when": "editorTextFocus"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "prompt-context.copyContext",
+          "group": "9_cutcopypaste",
+          "when": "resourceScheme == file"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "PromptContext",
+      "properties": {
+        "prompt-context.maxFileSize": {
+          "type": "number",
+          "default": 100,
+          "description": "Max file size to copy (KB). Prevents token overflow by skipping large files."
+        },
+        "prompt-context.excludedExtensions": {
+          "type": "array",
+          "default": [
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".gif",
+            ".svg",
+            ".ico",
+            ".pdf",
+            ".zip",
+            ".exe",
+            ".dll",
+            ".node",
+            ".bin",
+            ".lock",
+            ".pyc"
+          ],
+          "description": "Extensions to automatically exclude (binary/asset files)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.107.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "typescript-eslint": "^8.48.1",
+    "eslint": "^9.39.1",
+    "typescript": "^5.9.3",
+    "ts-loader": "^9.5.4",
+    "webpack": "^5.103.0",
+    "webpack-cli": "^6.0.1",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2"
+  }
+}
