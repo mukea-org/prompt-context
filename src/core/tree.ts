@@ -3,18 +3,20 @@ import * as path from "path";
 
 /**
  * 生成上下文文件树
- * 逻辑：显示涉及的目录及其一级子文件结构
+ * 改进版：隐藏绝对路径，更智能的层级展示
  */
 export async function generateProjectTreeContext(filesAndFolders: vscode.Uri[]): Promise<string> {
-    // 1. 收集所有需要展示的父级目录
-    // 如果用户选中了文件夹，我们需要展示该文件夹的父级（看到它是一个文件夹）
-    // 或者我们认为选中文件夹本身就是根。
-    // 为了保持一致性，我们展示包含选中项的目录。
-    
     const dirsToScan = new Set<string>();
     
+    // 逻辑优化：
+    // 1. 如果选中了文件夹，我们想看这个文件夹里面的内容
+    // 2. 如果只选中了文件，我们想看这些文件所在的目录
+    
     for (const uri of filesAndFolders) {
-        // 展示选中项所在的目录结构
+        // 判断是文件还是文件夹（虽然 Uri 没法直接看，但我们可以根据是否有扩展名简单猜测，或者统一取 dirname）
+        // 更稳妥的方式：直接取其父目录。但如果用户选的是 src 文件夹，父目录就是根目录，会显示 node_modules 等杂项。
+        
+        // 策略：始终以 workspace root 为基准来计算相对路径，展示相对路径的树
         const parentDir = path.dirname(uri.fsPath);
         dirsToScan.add(parentDir);
     }
@@ -22,17 +24,20 @@ export async function generateProjectTreeContext(filesAndFolders: vscode.Uri[]):
     let treeOutput = "Project Tree Context:\n";
     const sortedDirs = Array.from(dirsToScan).sort();
 
-    // 辅助集合：用于快速判断某个文件是否在用户选中的列表中（或是选中文件夹的子项）
+    // 辅助集合：用于快速判断标记
     const selectedPaths = new Set(filesAndFolders.map(u => u.fsPath));
 
     for (const dirPath of sortedDirs) {
         const dirUri = vscode.Uri.file(dirPath);
+        
+        // --- 核心修改：强制使用相对路径 ---
         const relativeDirPath = vscode.workspace.asRelativePath(dirUri, false);
-        const normalizedDirPath = relativeDirPath === relativeDirPath 
-            ? (relativeDirPath === "" ? "." : relativeDirPath.split(path.sep).join("/"))
-            : ".";
+        
+        // 如果 relativeDirPath 是空字符串，说明就是根目录，显示 "."
+        // 统一把 Windows 的反斜杠 \ 换成 /
+        const normalizedDisplayPath = (relativeDirPath === "" ? "." : relativeDirPath).split(path.sep).join("/");
 
-        treeOutput += `\nDirectory: ${normalizedDirPath}/\n`;
+        treeOutput += `\nDirectory: ${normalizedDisplayPath}/\n`;
 
         try {
             const entries = await vscode.workspace.fs.readDirectory(dirUri);
@@ -43,17 +48,20 @@ export async function generateProjectTreeContext(filesAndFolders: vscode.Uri[]):
                 return a[1] === vscode.FileType.Directory ? -1 : 1;
             });
 
-            for (let i = 0; i < entries.length; i++) {
-                const [name, type] = entries[i];
-                const isLast = i === entries.length - 1;
+            // 过滤忽略的文件夹（如 node_modules）- 让树更干净
+            const ignoreList = [".git", "node_modules", "dist", "out", ".vscode", ".idea"];
+            const filteredEntries = entries.filter(([name]) => !ignoreList.includes(name));
+
+            for (let i = 0; i < filteredEntries.length; i++) {
+                const [name, type] = filteredEntries[i];
+                const isLast = i === filteredEntries.length - 1;
                 const prefix = isLast ? "└── " : "├── ";
                 
-                // 标记逻辑
                 const entryFsPath = path.join(dirPath, name);
                 
-                // 如果当前项在用户的选中列表中，或者是选中文件夹，打个标记
-                // 注意：这里仅做精确匹配标记，不做深层递归标记，保持清爽
+                // 标记逻辑
                 const isSelected = selectedPaths.has(entryFsPath);
+                // 或者是选中目录的父级/子级？这里简单点，只标记直接选中的
                 const mark = isSelected ? " (*)" : "";
                 
                 const displayName = type === vscode.FileType.Directory ? `${name}/` : name;
