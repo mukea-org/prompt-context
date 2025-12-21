@@ -1,83 +1,128 @@
 # PromptContext for VS Code
 
-**Prepare your code for AI prompts instantly.**
+[![Version](https://vsmarketplacebadge.apphb.com/version/mukea.prompt-context.svg)](https://marketplace.visualstudio.com/items?itemName=mukea.prompt-context)
+[![Installs](https://vsmarketplacebadge.apphb.com/installs-short/mukea.prompt-context.svg)](https://marketplace.visualstudio.com/items?itemName=mukea.prompt-context)
+[![License](https://img.shields.io/github/license/mukea-org/prompt-context)](LICENSE)
 
-PromptContext is the essential productivity tool for developers working with LLMs (ChatGPT, Claude, GitHub Copilot, etc.). It helps you build the perfect "context window" by copying code files into a clean, LLM-friendly Markdown format with smart safeguards against token waste.
+**The essential tool for Coding with AI.**
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg) ![Version](https://img.shields.io/badge/version-0.0.1-green.svg)
+PromptContext helps you prepare code context for LLMs (ChatGPT, Claude, DeepSeek, Gemini) in seconds. It formats your code with **relative paths**, **file tree structures**, and **line numbers**, ensuring the AI understands your project structure instantly.
 
-## 🚀 Key Features
+---
 
-*   **📄 Smart Context Copying**: Copy one or multiple files to your clipboard formatted specifically for AI prompts.
-    *   Includes relative file paths.
-    *   Wraps content in language-specific Markdown code blocks.
-    *   **Multi-select support**: Select multiple files in the Explorer to bundle them into one prompt.
-*   **🛡️ Token Safeguards**:
-    *   **Binary Detection**: Automatically skips images, PDFs, and binary files to prevent garbage text in your prompt.
-    *   **Size Limits**: Skips files larger than the configured limit (default 100KB) to save your context window.
-*   **📍 Path Headers**: Instantly insert the relative file path as a comment at the top of your current file (useful for single-file copy-pasting).
+## 🚀 Why PromptContext?
 
-## 📝 Example Output
+When pasting code to AI, you often face these problems:
+*   ❌ "Which file is this code from?" (AI loses context of file paths).
+*   ❌ "I need to see the folder structure to understand how modules interact."
+*   ❌ Copying a folder manually is tedious.
+*   ❌ Accidentally pasting 10MB of `node_modules` or binary files.
 
-When you use **"Copy to Prompt"**, your clipboard will contain:
+**PromptContext solves all of this.**
 
-> File: src/services/auth.ts
+---
+
+## ✨ Key Features
+
+### 1. 📂 Smart File & Folder Copying
+Right-click on any file **or folder** in the Explorer and select `Copy to Prompt`.
+*   **Recursive Processing**: Automatically scans folders (skipping `node_modules`, `.git`, etc.).
+*   **Project Tree**: Generates an ASCII directory tree at the beginning of the prompt so the AI understands the architecture.
+*   **Markdown Format**: Wraps content in code blocks with language identifiers.
+
+### 2. ✂️ Intelligent Selection Mode
+Select a block of code in the editor and run the command.
+*   **Auto Line Numbers**: Automatically adds line numbers (e.g., `12 | import ...`) to the selected text. Great for asking "Explain the logic on line 15".
+*   **Multi-Cursor Support**: Handles multiple selections gracefully with gap indicators.
+
+### 3. 🛡️ Safety & Optimization
+*   **Binary Filtering**: Automatically skips images, PDFs, and compiled binaries.
+*   **Size Limits**: Prevents copying massive files that would exceed token limits (default 100KB, configurable).
+*   **Token Estimation**: Shows an estimated token count in the notification after copying.
+
+### 4. 📝 Path Headers
+Insert the relative file path as a comment at the top of your current file with one command (`PromptContext: Add File Path Header`).
+
+---
+
+## 📖 How to Use
+
+### Scene A: Copying a Whole Module (Folder)
+1. Right-click a folder (e.g., `src/utils`) in the Explorer.
+2. Select **Prompt Context: Copy to Prompt**.
+3. Paste into ChatGPT/Claude. You get:
+   *   A file tree of the folder.
+   *   The content of all valid text files inside.
+
+### Scene B: Code Review (Selection)
+1. Select a function in your code.
+2. Press `Ctrl+Shift+P` (or `Cmd+Shift+P`) -> **Prompt Context: Copy to Prompt**.
+3. Paste. The output includes **Line Numbers** for precise referencing.
+
+### Scene C: Multi-File Context
+1. Hold `Ctrl` (or `Cmd`) and select multiple specific files in Explorer.
+2. Right-click -> **Prompt Context: Copy to Prompt**.
+
+---
+
+## ⚙️ Configuration
+
+Customize the behavior in VS Code Settings (`Ctrl+,` -> search `prompt-context`):
+
+| Setting | Default | Description |
+| :--- | :--- | :--- |
+| `prompt-context.maxFileSize` | `100` | Max file size (KB) to process. Files larger than this are skipped. |
+| `prompt-context.excludedExtensions` | `[.png, .exe, ...]` | List of file extensions to always ignore. |
+
+---
+
+## 📦 Output Example
+
+When you copy files, the clipboard content looks like this:
+
+> Project Tree Context:
+> 
+> Directory: 
+>
+> src/
+>
+> ├── extension.ts (*)
+> 
+> └── utils/
+> 
+> Directory: 
+> src/utils/
+>
+> ├── helper.ts (*)
+> 
+> └── logger.ts
+> 
+> ---
+> 
+> File: src/extension.ts
 > ```typescript
 > import * as vscode from "vscode";
-> // ... actual code content ...
+> // ... code content ...
 > ```
 > 
 > ---
 > 
 > File: src/utils/helper.ts
 > ```typescript
-> export function formatDate(date: Date) {
->   // ... actual code content ...
-> }
+> export function help() { ... }
 > ```
-
-*This format allows LLMs to understand your project structure and reference specific files accurately.*
-
-## 💻 How to Use
-
-### 1. Copy Context for AI (The Main Feature)
-Right-click on any file (or multiple files) in the **Explorer** or right-click inside an open **Editor**.
-*   Select **`Copy to Prompt (Markdown)`**.
-*   Paste directly into ChatGPT/Claude.
-
-### 2. Add Path Header
-Open a file and run the command (or right-click):
-*   Select **`Add File Path Header`**.
-*   Result: `// src/components/Button.tsx` is inserted at line 1.
-
-## ⚙️ Extension Settings
-
-This extension is configurable to fit your workflow:
-
-| Setting | Default | Description |
-| :--- | :--- | :--- |
-| `prompt-context.maxFileSize` | `100` | Max file size (in KB) to copy. Files larger than this are summarized as "Content Omitted" to save tokens. |
-| `prompt-context.excludedExtensions` | `[.png, .exe, ...]` | List of file extensions to automatically ignore (images, binaries, locks). |
-
-## 📦 Installation
-
-1. Open **VS Code**.
-2. Go to the **Extensions** view (`Ctrl+Shift+X` or `Cmd+Shift+X`).
-3. Search for **PromptContext**.
-4. Click **Install**.
-
-## ❓ FAQ
-
-**Q: Why does it skip some files?**
-A: The extension includes a safety mechanism to prevent copying binary files (which look like gibberish text) or massive files that would exceed AI token limits. You can adjust the `maxFileSize` in settings.
-
-**Q: Does it support multi-root workspaces?**
-A: Yes, it calculates paths relative to the workspace folder the file belongs to.
-
-## 📄 License
-
-MIT License
 
 ---
 
-**Happy Prompting!** 🤖✨
+## ⌨️ Commands
+
+*   `prompt-context.copyContext`: Copy files/selection to clipboard formatted for AI.
+*   `prompt-context.addHeader`: Insert relative path comment at the top of the current file.
+
+---
+
+## 🤝 Contributing
+
+Found a bug or have a feature request? Please open an issue on our [GitHub Repository](https://github.com/mukea-org/prompt-context).
+
+**Happy Coding with AI!** 🤖 code
