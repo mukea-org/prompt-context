@@ -1,8 +1,5 @@
 # PromptContext for VS Code
 
-[![Version](https://vsmarketplacebadge.apphb.com/version/mukea.prompt-context.svg)](https://marketplace.visualstudio.com/items?itemName=mukea.prompt-context)
-[![Installs](https://vsmarketplacebadge.apphb.com/installs-short/mukea.prompt-context.svg)](https://marketplace.visualstudio.com/items?itemName=mukea.prompt-context)
-[![License](https://img.shields.io/github/license/mukea-org/prompt-context)](LICENSE)
 
 **The essential tool for Coding with AI.**
 
