@@ -82,16 +82,13 @@ When you copy files, the clipboard content looks like this:
 
 > Project Tree Context:
 > 
-> Directory: 
->
-> src/
+> Directory: src/
 >
 > ├── extension.ts (*)
 > 
 > └── utils/
 > 
-> Directory: 
-> src/utils/
+> Directory: src/utils/
 >
 > ├── helper.ts (*)
 > 
