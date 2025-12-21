@@ -2,7 +2,7 @@
   "name": "prompt-context",
   "displayName": "PromptContext",
   "description": "The essential tool for LLM prompting. Copy code files to Markdown with relative paths, smart binary filtering, and size safeguards.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "icon": "icon.png",
   "publisher": "mukea.cc",
   "repository": {
@@ -85,6 +85,7 @@
     }
   },
   "scripts": {
+    "build": "vsce package",
     "vscode:prepublish": "pnpm run package",
     "compile": "webpack",
     "watch": "webpack --watch",
