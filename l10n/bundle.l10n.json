@@ -1,0 +1,23 @@
+{
+  "Copied selection! (~{0} tokens)": "Copied selection! (~{0} tokens)",
+  "Copy selection failed: {0}": "Copy selection failed: {0}",
+  "Building Prompt Context...": "Building Prompt Context...",
+  "Generating project tree...": "Generating project tree...",
+  "Copied {0} files": "Copied {0} files",
+  " ({0} skipped)": " ({0} skipped)",
+  " (~{0} tokens).": " (~{0} tokens).",
+  "No valid text files found to copy.": "No valid text files found to copy.",
+  "Context build failed: {0}": "Context build failed: {0}",
+  "Path header already present.": "Path header already present.",
+  "Path header added.": "Path header added.",
+  "File: {0} (Selection)": "File: {0} (Selection)",
+  "File: {0}": "File: {0}",
+  "[Skipped: Binary/Asset file ({0})]": "[Skipped: Binary/Asset file ({0})]",
+  "[Skipped: Size {0}KB > {1}KB limit]": "[Skipped: Size {0}KB > {1}KB limit]",
+  "[Skipped: Binary content detected]": "[Skipped: Binary content detected]",
+  "Reading {0}...": "Reading {0}...",
+  "Scanning dir {0}...": "Scanning dir {0}...",
+  "Project Tree Context:": "Project Tree Context:",
+  "Directory: {0}/": "Directory: {0}/",
+  "(Error reading directory)": "(Error reading directory)"
+}

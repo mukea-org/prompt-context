@@ -6,6 +6,7 @@ import * as path from "path";
  * 改进版：隐藏绝对路径，更智能的层级展示
  */
 export async function generateProjectTreeContext(filesAndFolders: vscode.Uri[]): Promise<string> {
+    const t = vscode.l10n.t;
     const dirsToScan = new Set<string>();
     
     // 逻辑优化：
@@ -21,7 +22,7 @@ export async function generateProjectTreeContext(filesAndFolders: vscode.Uri[]):
         dirsToScan.add(parentDir);
     }
 
-    let treeOutput = "Project Tree Context:\n";
+    let treeOutput = `${t("Project Tree Context:")}\n`;
     const sortedDirs = Array.from(dirsToScan).sort();
 
     // 辅助集合：用于快速判断标记
@@ -37,7 +38,7 @@ export async function generateProjectTreeContext(filesAndFolders: vscode.Uri[]):
         // 统一把 Windows 的反斜杠 \ 换成 /
         const normalizedDisplayPath = (relativeDirPath === "" ? "." : relativeDirPath).split(path.sep).join("/");
 
-        treeOutput += `\nDirectory: ${normalizedDisplayPath}/\n`;
+        treeOutput += `\n${t("Directory: {0}/", normalizedDisplayPath)}\n`;
 
         try {
             const entries = await vscode.workspace.fs.readDirectory(dirUri);
@@ -68,7 +69,7 @@ export async function generateProjectTreeContext(filesAndFolders: vscode.Uri[]):
                 treeOutput += `${prefix}${displayName}${mark}\n`;
             }
         } catch (e) {
-            treeOutput += `(Error reading directory)\n`;
+            treeOutput += `${t("(Error reading directory)")}\n`;
         }
     }
     return treeOutput + "\n";

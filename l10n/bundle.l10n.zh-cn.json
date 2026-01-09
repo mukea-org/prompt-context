@@ -1,0 +1,23 @@
+{
+  "Copied selection! (~{0} tokens)": "已复制选区！（约 {0} tokens）",
+  "Copy selection failed: {0}": "复制选区失败：{0}",
+  "Building Prompt Context...": "正在构建提示词上下文…",
+  "Generating project tree...": "正在生成目录树…",
+  "Copied {0} files": "已复制 {0} 个文件",
+  " ({0} skipped)": "（跳过 {0} 个）",
+  " (~{0} tokens).": "（约 {0} tokens）。",
+  "No valid text files found to copy.": "没有找到可复制的有效文本文件。",
+  "Context build failed: {0}": "构建上下文失败：{0}",
+  "Path header already present.": "路径头已存在。",
+  "Path header added.": "已添加路径头。",
+  "File: {0} (Selection)": "文件：{0}（选区）",
+  "File: {0}": "文件：{0}",
+  "[Skipped: Binary/Asset file ({0})]": "[已跳过：二进制/资源文件（{0}）]",
+  "[Skipped: Size {0}KB > {1}KB limit]": "[已跳过：大小 {0}KB 超过 {1}KB 限制]",
+  "[Skipped: Binary content detected]": "[已跳过：检测到二进制内容]",
+  "Reading {0}...": "正在读取 {0}…",
+  "Scanning dir {0}...": "正在扫描目录 {0}…",
+  "Project Tree Context:": "项目目录树：",
+  "Directory: {0}/": "目录：{0}/",
+  "(Error reading directory)": "（读取目录失败）"
+}

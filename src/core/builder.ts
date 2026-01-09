@@ -19,6 +19,7 @@ export class ContextBuilder {
      * 处理编辑器内的选区 (Selection Mode)
      */
     public async processSelection(editor: vscode.TextEditor): Promise<string | null> {
+        const t = vscode.l10n.t;
         if (editor.selection.isEmpty) return null;
 
         const relativePath = vscode.workspace.asRelativePath(editor.document.uri, false);
@@ -41,7 +42,8 @@ export class ContextBuilder {
             }).join("\n");
         }).join("\n\n... (Gap) ...\n\n");
 
-        return `File: ${normalizedPath} (Selection)\n\`\`\`${langId}\n${selectedContent}\n\`\`\``;
+        const header = t("File: {0} (Selection)", normalizedPath);
+        return `${header}\n\`\`\`${langId}\n${selectedContent}\n\`\`\``;
     }
 
     /**
@@ -49,6 +51,7 @@ export class ContextBuilder {
      * 修复：增加 recursiveExpand 逻辑
      */
     public async processFiles(uris: vscode.Uri[], token: vscode.CancellationToken, progress: vscode.Progress<{ message?: string }>): Promise<BuildResult> {
+        const t = vscode.l10n.t;
         const resultParts: string[] = [];
         let processedCount = 0;
         let skippedCount = 0;
@@ -61,16 +64,17 @@ export class ContextBuilder {
             if (token.isCancellationRequested) break;
 
             const fileName = path.basename(fileUri.fsPath);
-            progress.report({ message: `Reading ${fileName}...` });
+            progress.report({ message: t("Reading {0}...", fileName) });
 
             // 获取相对路径
             const relativePath = vscode.workspace.asRelativePath(fileUri, false);
             const normalizedPath = normalizePath(relativePath);
             const ext = path.extname(fileUri.fsPath).toLowerCase();
+            const fileHeader = t("File: {0}", normalizedPath);
 
             // 检查后缀黑名单
             if (this.excludedExts.includes(ext)) {
-                resultParts.push(`File: ${normalizedPath}\n[Skipped: Binary/Asset file (${ext})]`);
+                resultParts.push(`${fileHeader}\n${t("[Skipped: Binary/Asset file ({0})]", ext)}`);
                 skippedCount++;
                 continue;
             }
@@ -80,7 +84,13 @@ export class ContextBuilder {
                 const stat = await vscode.workspace.fs.stat(fileUri);
                 const fileSizeKB = stat.size / 1024;
                 if (fileSizeKB > this.maxFileSizeKB) {
-                    resultParts.push(`File: ${normalizedPath}\n[Skipped: Size ${fileSizeKB.toFixed(1)}KB > ${this.maxFileSizeKB}KB limit]`);
+                    resultParts.push(
+                        `${fileHeader}\n${t(
+                            "[Skipped: Size {0}KB > {1}KB limit]",
+                            fileSizeKB.toFixed(1),
+                            this.maxFileSizeKB,
+                        )}`,
+                    );
                     skippedCount++;
                     continue;
                 }
@@ -90,7 +100,7 @@ export class ContextBuilder {
                 
                 // 检查二进制内容
                 if (isBinary(contentUint8)) {
-                    resultParts.push(`File: ${normalizedPath}\n[Skipped: Binary content detected]`);
+                    resultParts.push(`${fileHeader}\n${t("[Skipped: Binary content detected]")}`);
                     skippedCount++;
                     continue;
                 }
@@ -98,7 +108,7 @@ export class ContextBuilder {
                 const content = decodeText(contentUint8);
                 const langId = ext.replace(".", "") || "text";
 
-                resultParts.push(`File: ${normalizedPath}\n\`\`\`${langId}\n${content}\n\`\`\``);
+                resultParts.push(`${fileHeader}\n\`\`\`${langId}\n${content}\n\`\`\``);
                 processedCount++;
 
             } catch (err) {
@@ -118,6 +128,7 @@ export class ContextBuilder {
      * 递归展开文件夹，获取所有文件 Uri
      */
     private async expandFolders(uris: vscode.Uri[], token: vscode.CancellationToken, progress: vscode.Progress<{ message?: string }>): Promise<vscode.Uri[]> {
+        const t = vscode.l10n.t;
         let results: vscode.Uri[] = [];
         
         // 辅助队列
@@ -143,7 +154,7 @@ export class ContextBuilder {
                         continue;
                     }
 
-                    progress.report({ message: `Scanning dir ${dirName}...` });
+                    progress.report({ message: t("Scanning dir {0}...", dirName) });
                     
                     const entries = await vscode.workspace.fs.readDirectory(current);
                     for (const [name, type] of entries) {
