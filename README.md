@@ -1,122 +1,89 @@
-# PromptContext for VS Code
+# PromptContext (VS Code Extension)
 
-
-**The essential tool for Coding with AI.**
-
-PromptContext helps you prepare code context for LLMs (ChatGPT, Claude, DeepSeek, Gemini) in seconds. It formats your code with **relative paths**, **file tree structures**, and **line numbers**, ensuring the AI understands your project structure instantly.
+[中文](#中文) | [English](#english)
 
 ---
 
-## 🚀 Why PromptContext?
+## 中文
 
-When pasting code to AI, you often face these problems:
-*   ❌ "Which file is this code from?" (AI loses context of file paths).
-*   ❌ "I need to see the folder structure to understand how modules interact."
-*   ❌ Copying a folder manually is tedious.
-*   ❌ Accidentally pasting 10MB of `node_modules` or binary files.
+PromptContext 用于把代码上下文快速整理成适合粘贴给大模型的 Markdown：包含相对路径、目录树（可选）与文件内容，并自动跳过常见二进制/超大文件。
 
-**PromptContext solves all of this.**
+### 功能
 
----
+- 复制选区：在编辑器内选中代码后执行命令，会复制带行号的选区内容（更适合问“第 N 行为什么这样写”）。
+- 复制文件/文件夹：在资源管理器选择文件或文件夹后执行命令，会递归读取文本文件并可生成目录树。
+- 多选：在资源管理器多选多个文件/文件夹后执行命令，会按所选内容生成上下文。
+- 插入路径头：把当前文件的相对路径插入到文件顶部，并触发 VS Code 的“添加行注释”。
 
-## ✨ Key Features
+### 入口（在哪里能找到）
 
-### 1. 📂 Smart File & Folder Copying
-Right-click on any file **or folder** in the Explorer and select `Copy to Prompt`.
-*   **Recursive Processing**: Automatically scans folders (skipping `node_modules`, `.git`, etc.).
-*   **Project Tree**: Generates an ASCII directory tree at the beginning of the prompt so the AI understands the architecture.
-*   **Markdown Format**: Wraps content in code blocks with language identifiers.
+- 命令面板：`Prompt Context: Copy to Prompt (Markdown)` / `Prompt Context: Add File Path Header`
+- 编辑器右键菜单（编辑区）：可复制/插入路径头
+- 资源管理器右键菜单：可对文件/文件夹复制
+- 编辑器标签页：在文件选项卡（标签栏）上也可以触发“复制为提示词”
 
-### 2. ✂️ Intelligent Selection Mode
-Select a block of code in the editor and run the command.
-*   **Auto Line Numbers**: Automatically adds line numbers (e.g., `12 | import ...`) to the selected text. Great for asking "Explain the logic on line 15".
-*   **Multi-Cursor Support**: Handles multiple selections gracefully with gap indicators.
+### 配置
 
-### 3. 🛡️ Safety & Optimization
-*   **Binary Filtering**: Automatically skips images, PDFs, and compiled binaries.
-*   **Size Limits**: Prevents copying massive files that would exceed token limits (default 100KB, configurable).
-*   **Token Estimation**: Shows an estimated token count in the notification after copying.
+在 VS Code 设置中搜索 `prompt-context`：
 
-### 4. 📝 Path Headers
-Insert the relative file path as a comment at the top of your current file with one command (`PromptContext: Add File Path Header`).
+- `prompt-context.maxFileSize`：最大文件大小（KB），默认 `100`
+- `prompt-context.excludedExtensions`：自动排除的扩展名列表（如图片/压缩包/二进制等）
 
----
+### 开发与打包
 
-## 📖 How to Use
+```bash
+pnpm install
+pnpm run package
+pnpm dlx @vscode/vsce package --no-dependencies
+```
 
-### Scene A: Copying a Whole Module (Folder)
-1. Right-click a folder (e.g., `src/utils`) in the Explorer.
-2. Select **Prompt Context: Copy to Prompt**.
-3. Paste into ChatGPT/Claude. You get:
-   *   A file tree of the folder.
-   *   The content of all valid text files inside.
+### CI / 发布（GitHub Actions）
 
-### Scene B: Code Review (Selection)
-1. Select a function in your code.
-2. Press `Ctrl+Shift+P` (or `Cmd+Shift+P`) -> **Prompt Context: Copy to Prompt**.
-3. Paste. The output includes **Line Numbers** for precise referencing.
+- 手动打包（Artifact）：`.github/workflows/package.yml` 支持 `workflow_dispatch`，会产出 `.vsix` 并作为 artifact 上传
+- 自动发 Release：`.github/workflows/release.yml` 在推送 `v*` tag（例如 `v1.0.0`）时自动创建 GitHub Release 并上传 `.vsix`
+  - 版本校验：`tag` 必须等于 `v${package.json.version}`，否则 workflow 失败
 
-### Scene C: Multi-File Context
-1. Hold `Ctrl` (or `Cmd`) and select multiple specific files in Explorer.
-2. Right-click -> **Prompt Context: Copy to Prompt**.
+### 本地化（i18n）
+
+扩展文案支持中文/英文，会跟随 VS Code 的显示语言自动切换。
 
 ---
 
-## ⚙️ Configuration
+## English
 
-Customize the behavior in VS Code Settings (`Ctrl+,` -> search `prompt-context`):
+PromptContext prepares code context for LLM prompting as Markdown: relative paths, optional directory tree, and file contents, while skipping common binary/oversized files.
 
-| Setting | Default | Description |
-| :--- | :--- | :--- |
-| `prompt-context.maxFileSize` | `100` | Max file size (KB) to process. Files larger than this are skipped. |
-| `prompt-context.excludedExtensions` | `[.png, .exe, ...]` | List of file extensions to always ignore. |
+### Features
 
----
+- Copy selection: with an editor selection, the command copies the selection with line numbers.
+- Copy file/folder: from the Explorer, recursively collects text files and can include a directory tree.
+- Multi-select: supports selecting multiple files/folders in the Explorer.
+- Insert path header: inserts the workspace-relative path at the top of the current file and triggers VS Code “add line comment”.
 
-## 📦 Output Example
+### Entry points
 
-When you copy files, the clipboard content looks like this:
+- Command Palette: `Prompt Context: Copy to Prompt (Markdown)` / `Prompt Context: Add File Path Header`
+- Editor context menu: copy / insert path header
+- Explorer context menu: copy for files/folders
+- Editor tab/title area: “Copy to Prompt (Markdown)” is also available from the file tab UI
 
-> Project Tree Context:
-> 
-> Directory: src/
->
-> ├── extension.ts (*)
-> 
-> └── utils/
-> 
-> Directory: src/utils/
->
-> ├── helper.ts (*)
-> 
-> └── logger.ts
-> 
-> ---
-> 
-> File: src/extension.ts
-> ```typescript
-> import * as vscode from "vscode";
-> // ... code content ...
-> ```
-> 
-> ---
-> 
-> File: src/utils/helper.ts
-> ```typescript
-> export function help() { ... }
-> ```
+### Settings
 
----
+Search `prompt-context` in VS Code Settings:
 
-## ⌨️ Commands
+- `prompt-context.maxFileSize` (KB), default `100`
+- `prompt-context.excludedExtensions` list
 
-*   `prompt-context.copyContext`: Copy files/selection to clipboard formatted for AI.
-*   `prompt-context.addHeader`: Insert relative path comment at the top of the current file.
+### Dev & Packaging
 
----
+```bash
+pnpm install
+pnpm run package
+pnpm dlx @vscode/vsce package --no-dependencies
+```
 
-## 🤝 Contributing
+### CI / Release (GitHub Actions)
 
-Found a bug or have a feature request? Please open an issue on our [GitHub Repository](https://github.com/mukea-org/prompt-context).
-
-**Happy Coding with AI!** 🤖 code
+- Manual packaging (Artifact): `.github/workflows/package.yml` supports `workflow_dispatch` and uploads a `.vsix` artifact
+- Automatic Release: `.github/workflows/release.yml` runs on `v*` tags (e.g. `v1.0.0`), creates a GitHub Release, and uploads the `.vsix`
+  - Version check: the tag must equal `v${package.json.version}`
