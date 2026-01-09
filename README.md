@@ -10,14 +10,38 @@ PromptContext 用于把代码上下文快速整理成适合粘贴给大模型的
 
 ### 安装（VSIX）
 
-1. 打开仓库的 GitHub Release 页面，下载最新的 `.vsix`（例如 `prompt-context-v1.0.0.vsix`）。
+你可以从 GitHub Releases 下载 `.vsix` 并安装（无需扩展市场）。
+
+#### 方式 A：通过 VS Code UI 安装
+
+1. 打开仓库的 GitHub Release 页面，下载最新的 `.vsix`（例如 `prompt-context-v1.0.1.vsix`）。
 2. VS Code → 扩展（Extensions）→ 右上角 `...` → **从 VSIX 安装...**（Install from VSIX...）。
 3. 选择下载的 `.vsix` 文件并安装，按提示重载窗口。
 
 （可选）命令行安装：
 
 ```bash
-code --install-extension ./prompt-context-v1.0.0.vsix
+code --install-extension ./prompt-context-v1.0.1.vsix --force
+```
+
+#### 方式 B：命令行下载安装（安装后删除文件）
+
+macOS / Linux（curl，一行命令）：
+
+```bash
+tmp="$(mktemp -t prompt-context.XXXXXX.vsix)" && curl -fsSL -o "$tmp" "https://github.com/mukea-org/prompt-context/releases/download/v1.0.1/prompt-context-v1.0.1.vsix" && code --install-extension "$tmp" --force && rm -f "$tmp"
+```
+
+macOS / Linux（wget，一行命令）：
+
+```bash
+tmp="$(mktemp -t prompt-context.XXXXXX.vsix)" && wget -qO "$tmp" "https://github.com/mukea-org/prompt-context/releases/download/v1.0.1/prompt-context-v1.0.1.vsix" && code --install-extension "$tmp" --force && rm -f "$tmp"
+```
+
+Windows PowerShell（一行命令）：
+
+```powershell
+$p = Join-Path $env:TEMP "prompt-context-v1.0.1.vsix"; Invoke-WebRequest -Uri "https://github.com/mukea-org/prompt-context/releases/download/v1.0.1/prompt-context-v1.0.1.vsix" -OutFile $p; code --install-extension $p --force; Remove-Item $p -Force
 ```
 
 ### 如何使用
@@ -100,14 +124,38 @@ PromptContext prepares code context for LLM prompting as Markdown: relative path
 
 ### Install (VSIX)
 
-1. Open the repository’s GitHub Releases page and download the latest `.vsix` (for example `prompt-context-v1.0.0.vsix`).
+You can install the extension from GitHub Releases as a `.vsix` (no Marketplace required).
+
+#### Option A: Install via VS Code UI
+
+1. Open the repository’s GitHub Releases page and download the latest `.vsix` (for example `prompt-context-v1.0.1.vsix`).
 2. VS Code → Extensions → top-right `...` → **Install from VSIX...**
 3. Select the downloaded `.vsix`, install it, then reload when prompted.
 
 (Optional) Install via CLI:
 
 ```bash
-code --install-extension ./prompt-context-v1.0.0.vsix
+code --install-extension ./prompt-context-v1.0.1.vsix --force
+```
+
+#### Option B: Download + install via CLI (delete the file after install)
+
+macOS / Linux (curl, one-liner):
+
+```bash
+tmp="$(mktemp -t prompt-context.XXXXXX.vsix)" && curl -fsSL -o "$tmp" "https://github.com/mukea-org/prompt-context/releases/download/v1.0.1/prompt-context-v1.0.1.vsix" && code --install-extension "$tmp" --force && rm -f "$tmp"
+```
+
+macOS / Linux (wget, one-liner):
+
+```bash
+tmp="$(mktemp -t prompt-context.XXXXXX.vsix)" && wget -qO "$tmp" "https://github.com/mukea-org/prompt-context/releases/download/v1.0.1/prompt-context-v1.0.1.vsix" && code --install-extension "$tmp" --force && rm -f "$tmp"
+```
+
+Windows PowerShell (one-liner):
+
+```powershell
+$p = Join-Path $env:TEMP "prompt-context-v1.0.1.vsix"; Invoke-WebRequest -Uri "https://github.com/mukea-org/prompt-context/releases/download/v1.0.1/prompt-context-v1.0.1.vsix" -OutFile $p; code --install-extension $p --force; Remove-Item $p -Force
 ```
 
 ### How to use
