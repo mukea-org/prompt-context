@@ -8,6 +8,51 @@
 
 PromptContext 用于把代码上下文快速整理成适合粘贴给大模型的 Markdown：包含相对路径、目录树（可选）与文件内容，并自动跳过常见二进制/超大文件。
 
+### 安装（VSIX）
+
+1. 打开仓库的 GitHub Release 页面，下载最新的 `.vsix`（例如 `prompt-context-v1.0.0.vsix`）。
+2. VS Code → 扩展（Extensions）→ 右上角 `...` → **从 VSIX 安装...**（Install from VSIX...）。
+3. 选择下载的 `.vsix` 文件并安装，按提示重载窗口。
+
+（可选）命令行安装：
+
+```bash
+code --install-extension ./prompt-context-v1.0.0.vsix
+```
+
+### 如何使用
+
+#### 场景 A：复制选区（带行号）
+
+1. 在编辑器中选中一段代码。
+2. 执行命令 **Prompt Context: 复制为提示词 (Markdown)**。
+3. 直接粘贴到 ChatGPT/Claude/DeepSeek/Gemini 等。
+
+#### 场景 B：复制当前文件
+
+你可以用任意一种方式触发：
+
+- 命令面板：`Ctrl+Shift+P`（macOS：`Cmd+Shift+P`）→ 运行 **Prompt Context: 复制为提示词 (Markdown)**
+- 编辑器右键菜单（编辑区）：选择 **复制为提示词 (Markdown)**
+- 编辑器标签页：在文件选项卡区域点击/右键找到 **复制为提示词 (Markdown)**
+
+#### 场景 C：复制文件夹（递归）
+
+1. 在资源管理器中右键一个文件夹。
+2. 选择 **复制为提示词 (Markdown)**。
+3. 会递归收集文本文件（自动跳过二进制/超大文件），并在开头附带目录树（如可生成）。
+
+#### 场景 D：多选复制（拼上下文）
+
+1. 在资源管理器按住 `Ctrl`/`Cmd` 多选多个文件/文件夹。
+2. 右键选择 **复制为提示词 (Markdown)**。
+
+#### 场景 E：插入文件路径头注释
+
+1. 打开一个文件。
+2. 运行 **Prompt Context: 插入文件路径头注释**。
+3. 扩展会在文件顶部插入相对路径，并触发 VS Code 的“添加行注释”。
+
 ### 功能
 
 - 复制选区：在编辑器内选中代码后执行命令，会复制带行号的选区内容（更适合问“第 N 行为什么这样写”）。
@@ -52,6 +97,51 @@ pnpm dlx @vscode/vsce package --no-dependencies
 ## English
 
 PromptContext prepares code context for LLM prompting as Markdown: relative paths, optional directory tree, and file contents, while skipping common binary/oversized files.
+
+### Install (VSIX)
+
+1. Open the repository’s GitHub Releases page and download the latest `.vsix` (for example `prompt-context-v1.0.0.vsix`).
+2. VS Code → Extensions → top-right `...` → **Install from VSIX...**
+3. Select the downloaded `.vsix`, install it, then reload when prompted.
+
+(Optional) Install via CLI:
+
+```bash
+code --install-extension ./prompt-context-v1.0.0.vsix
+```
+
+### How to use
+
+#### Scenario A: Copy selection (with line numbers)
+
+1. Select a code snippet in the editor.
+2. Run **Prompt Context: Copy to Prompt (Markdown)**.
+3. Paste into ChatGPT/Claude/DeepSeek/Gemini, etc.
+
+#### Scenario B: Copy current file
+
+Use any of the following:
+
+- Command Palette: `Ctrl+Shift+P` (macOS: `Cmd+Shift+P`) → run **Prompt Context: Copy to Prompt (Markdown)**
+- Editor context menu: choose **Copy to Prompt (Markdown)**
+- Editor tab/title area: click/right-click the file tab area and run **Copy to Prompt (Markdown)**
+
+#### Scenario C: Copy a folder (recursive)
+
+1. In the Explorer, right-click a folder.
+2. Choose **Copy to Prompt (Markdown)**.
+3. It will recursively collect text files (skipping binaries/oversized files) and prepend a directory tree (when available).
+
+#### Scenario D: Multi-select
+
+1. In the Explorer, multi-select files/folders with `Ctrl`/`Cmd`.
+2. Right-click and choose **Copy to Prompt (Markdown)**.
+
+#### Scenario E: Insert file path header
+
+1. Open a file.
+2. Run **Prompt Context: Add File Path Header**.
+3. The extension inserts the relative path at the top and triggers VS Code “add line comment”.
 
 ### Features
 
