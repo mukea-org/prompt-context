@@ -1,7 +1,7 @@
 {
   "name": "prompt-context",
-  "displayName": "PromptContext",
-  "description": "The essential tool for LLM prompting. Copy code files to Markdown with relative paths, smart binary filtering, and size safeguards.",
+  "displayName": "%extension.displayName%",
+  "description": "%extension.description%",
   "version": "0.1.1",
   "icon": "icon.png",
   "publisher": "mukea",
@@ -23,13 +23,13 @@
     "commands": [
       {
         "command": "prompt-context.addHeader",
-        "title": "Add File Path Header",
-        "category": "Prompt Context"
+        "title": "%command.addHeader.title%",
+        "category": "%command.category%"
       },
       {
         "command": "prompt-context.copyContext",
-        "title": "Copy to Prompt (Markdown)",
-        "category": "Prompt Context"
+        "title": "%command.copyContext.title%",
+        "category": "%command.category%"
       }
     ],
     "menus": {
@@ -45,6 +45,20 @@
           "when": "editorTextFocus"
         }
       ],
+      "editor/title": [
+        {
+          "command": "prompt-context.copyContext",
+          "group": "navigation",
+          "when": "resourceScheme == file"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "prompt-context.copyContext",
+          "group": "9_cutcopypaste",
+          "when": "resourceScheme == file"
+        }
+      ],
       "explorer/context": [
         {
           "command": "prompt-context.copyContext",
@@ -54,12 +68,12 @@
       ]
     },
     "configuration": {
-      "title": "PromptContext",
+      "title": "%config.title%",
       "properties": {
         "prompt-context.maxFileSize": {
           "type": "number",
           "default": 100,
-          "description": "Max file size to copy (KB). Prevents token overflow by skipping large files."
+          "description": "%config.maxFileSize.description%"
         },
         "prompt-context.excludedExtensions": {
           "type": "array",
@@ -79,7 +93,7 @@
             ".lock",
             ".pyc"
           ],
-          "description": "Extensions to automatically exclude (binary/asset files)."
+          "description": "%config.excludedExtensions.description%"
         }
       }
     }

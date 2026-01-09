@@ -5,6 +5,7 @@ import { generateProjectTreeContext } from "./core/tree";
 import { estimateTokens, normalizePath } from "./core/utils";
 
 export async function copyContextCommand(uri?: vscode.Uri, uris?: vscode.Uri[]) {
+    const t = vscode.l10n.t;
     const editor = vscode.window.activeTextEditor;
     const builder = new ContextBuilder();
 
@@ -18,11 +19,15 @@ export async function copyContextCommand(uri?: vscode.Uri, uris?: vscode.Uri[]) 
             if (result) {
                 await vscode.env.clipboard.writeText(result);
                 const tokens = estimateTokens(result);
-                vscode.window.showInformationMessage(`Copied selection! (~${tokens} tokens)`);
+                vscode.window.showInformationMessage(
+                    t("Copied selection! (~{0} tokens)", tokens),
+                );
                 return;
             }
         } catch (error: any) {
-            vscode.window.showErrorMessage(`Copy selection failed: ${error.message}`);
+            vscode.window.showErrorMessage(
+                t("Copy selection failed: {0}", error.message),
+            );
             return;
         }
     }
@@ -41,7 +46,7 @@ export async function copyContextCommand(uri?: vscode.Uri, uris?: vscode.Uri[]) 
 
     await vscode.window.withProgress({
         location: vscode.ProgressLocation.Notification,
-        title: "Building Prompt Context...",
+        title: t("Building Prompt Context..."),
         cancellable: true,
     }, async (progress, token) => {
         try {
@@ -50,7 +55,7 @@ export async function copyContextCommand(uri?: vscode.Uri, uris?: vscode.Uri[]) 
             
             // 如果是多文件或文件夹选择，先生成树
             if (filesToProcess.length > 0) {
-                progress.report({ message: "Generating project tree..." });
+                progress.report({ message: t("Generating project tree...") });
                 const tree = await generateProjectTreeContext(filesToProcess);
                 if (tree) {
                     finalContent += tree + "\n\n---\n\n";
@@ -65,21 +70,25 @@ export async function copyContextCommand(uri?: vscode.Uri, uris?: vscode.Uri[]) 
                 await vscode.env.clipboard.writeText(finalContent);
                 
                 const tokens = estimateTokens(finalContent);
-                let msg = `Copied ${result.processedCount} files`;
+                let msg = t("Copied {0} files", result.processedCount);
                 if (result.skippedCount > 0) {
-                    msg += ` (${result.skippedCount} skipped)`;
+                    msg += t(" ({0} skipped)", result.skippedCount);
                 }
-                msg += ` (~${tokens} tokens).`;
+                msg += t(" (~{0} tokens).", tokens);
                 
                 vscode.window.showInformationMessage(msg);
             } else {
                 if (!token.isCancellationRequested) {
-                    vscode.window.showWarningMessage("No valid text files found to copy.");
+                    vscode.window.showWarningMessage(
+                        t("No valid text files found to copy."),
+                    );
                 }
             }
 
         } catch (error: any) {
-            vscode.window.showErrorMessage(`Context build failed: ${error.message}`);
+            vscode.window.showErrorMessage(
+                t("Context build failed: {0}", error.message),
+            );
         }
     });
 }
@@ -88,6 +97,7 @@ export async function copyContextCommand(uri?: vscode.Uri, uris?: vscode.Uri[]) 
  * 插入头部注释命令
  */
 export async function addHeaderCommand() {
+    const t = vscode.l10n.t;
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
 
@@ -97,7 +107,7 @@ export async function addHeaderCommand() {
     const firstLine = document.lineAt(0);
 
     if (firstLine.text.includes(normalizedPath)) {
-        vscode.window.setStatusBarMessage("Path header already present.", 2000);
+        vscode.window.setStatusBarMessage(t("Path header already present."), 2000);
         return;
     }
 
@@ -116,7 +126,7 @@ export async function addHeaderCommand() {
         const newPos = new vscode.Position(originalSelection.active.line + 1, originalSelection.active.character);
         editor.selection = new vscode.Selection(newPos, newPos);
         editor.revealRange(new vscode.Range(newPos, newPos));
-        vscode.window.setStatusBarMessage("Path header added.", 2000);
+        vscode.window.setStatusBarMessage(t("Path header added."), 2000);
     } catch (err) {
         console.error("Add Path Header Error:", err);
     }

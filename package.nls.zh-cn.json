@@ -1,0 +1,10 @@
+{
+  "extension.displayName": "PromptContext",
+  "extension.description": "AI 编程必备工具：将代码按相对路径与目录树打包为 Markdown，智能过滤二进制文件并提供大小保护。",
+  "command.category": "Prompt Context",
+  "command.addHeader.title": "插入文件路径头注释",
+  "command.copyContext.title": "复制为提示词 (Markdown)",
+  "config.title": "PromptContext",
+  "config.maxFileSize.description": "允许复制的最大文件大小（KB）。超过则跳过，避免提示词过长。",
+  "config.excludedExtensions.description": "自动排除的文件扩展名（通常为二进制/资源文件）。"
+}

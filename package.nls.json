@@ -1,0 +1,10 @@
+{
+  "extension.displayName": "PromptContext",
+  "extension.description": "The essential tool for LLM prompting. Copy code files to Markdown with relative paths, smart binary filtering, and size safeguards.",
+  "command.category": "Prompt Context",
+  "command.addHeader.title": "Add File Path Header",
+  "command.copyContext.title": "Copy to Prompt (Markdown)",
+  "config.title": "PromptContext",
+  "config.maxFileSize.description": "Max file size to copy (KB). Prevents token overflow by skipping large files.",
+  "config.excludedExtensions.description": "Extensions to automatically exclude (binary/asset files)."
+}
