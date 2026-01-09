@@ -1,0 +1,67 @@
+name: Package VS Code Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to build (branch/tag/SHA). Leave empty for default branch."
+        required: false
+        type: string
+      node_version:
+        description: "Node.js version"
+        required: false
+        default: "20"
+        type: string
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: package-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version || '20' }}
+          cache: pnpm
+
+      - name: Enable Corepack (pnpm)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build extension bundle
+        run: pnpm run package
+
+      - name: Create VSIX
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          REF_NAME="${GITHUB_REF_NAME:-manual}"
+          if [[ "${GITHUB_REF_TYPE:-}" != "tag" ]]; then
+            REF_NAME="manual-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
+          fi
+          OUT="prompt-context-${REF_NAME}-v${PKG_VERSION}.vsix"
+          pnpm dlx @vscode/vsce package --no-dependencies --out "$OUT"
+          echo "VSIX_OUT=$OUT" >> "$GITHUB_ENV"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.VSIX_OUT }}
+          path: ${{ env.VSIX_OUT }}
