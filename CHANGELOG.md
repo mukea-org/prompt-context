@@ -8,6 +8,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - N/A
 
+## [1.0.1]
+
+- Add runtime i18n for generated output and progress messages
+- Add helper script to install the latest VSIX from GitHub Releases
+
 ## [1.0.0]
 
 - Add editor tab/title menu entry for "Copy to Prompt (Markdown)"
